@@ -1,0 +1,14 @@
+div.history {
+    margin: 10px 200px;
+    color: #416F1F;
+}
+div.body {
+    margin: 10px 100px;
+}
+
+div.valid {
+    color: #27C233;
+}
+div.invalid {
+    color: #FF2C3C;
+}

@@ -1,30 +1,65 @@
 var app = angular.module("app", ['selectize']);
 
 var view1Controller = app.controller("viewController", function ($scope, $http) {
-    var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
+    var SERVER_URL = "http://localhost:8000/";
+    $scope.actOptions = {
+        valueField: 'name',
+        labelField: 'name',
+        placeholder: 'Pick Actions',
+        delimiter: ',',
+        maxItems: 10,
+        onChange: function(value) {
+            console.log("Check valid");
+            validateActions();
+        }
+    };
+    $scope.beliefOptions = {
+        valueField: 'name',
+        labelField: 'name',
+        placeholder: 'Pick slot value',
+        delimiter: ',',
+        maxItems: 1
+    };
+
     init();
+    function init() {
+        $scope.label2 = [];
+        $scope.label1 = [];
+        $scope.fileData = {};
+        $scope.turns = [];
+    }
+
+    // get session wise values
     $scope.listFiles = [];
-    $http.get(SERVER_URL + "list").then(function(res){
+    $scope.terminals = [];
+    $scope.turnYield = [];
+
+    $http.get(SERVER_URL + "files").then(function(res){
         var files = res.data.data;
+        var terminals = res.data.terminals;
+        var turnYield = res.data.turn_yield;
+
+
         if (files.length > 0) {
             files.forEach(function (file) {
-                $scope.listFiles.push({name: file})
+                $scope.listFiles.push({name: file});
             });
 
             $scope.selectedFile = files[0];
         }
-    });
-
-    $scope.removeLabel1 = removeLabel1;
-
-    $scope.addLabel1 = function (turn) {
-        if (!turn.label1) {
-            turn.label1 = [];
+        if (terminals.length > 0) {
+            terminals.forEach(function (t) {
+                $scope.terminals.push({name: t});
+            });
         }
-        turn.label1.push({row1: angular.copy(turn.row1), row2: angular.copy(turn.row2)});
-        turn.row1 = undefined;
-        turn.row2 = undefined;
-    };
+        if (turnYield.length > 0) {
+            turnYield.forEach(function (t) {
+                $scope.turnYield.push(t);
+            });
+        }
+        console.log($scope.terminals.length + " terminals");
+        console.log($scope.turnYield.length + " expects user input");
+    });
 
     function processContent(turns) {
         turns.forEach(function(turn, index){
@@ -33,7 +68,6 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
                 contentArrs.push({content: content, value: 'n', displayName: 'No'});
             });
             $scope.turns[index].label2 = contentArrs;
-            // $scope.label2.push({content: content, value: 'n', displayName: 'No'});
         });
     }
 
@@ -43,7 +77,11 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
             $scope.fileData = res.data.data;
             $scope.fileData.turns.forEach(function(turn) {
                 $scope.turns.push({
-                    comment: turn.comment
+                    mentions: turn.mentions,
+                    belief: turn.belief,
+                    history: turn.history,
+                    actions: turn.actions,
+                    valid: true
                 })
             });
             if ($scope.fileData.turns[0].label) {
@@ -56,7 +94,36 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
             alert("Can't load file data");
         });
     }
-    
+
+    $scope.validateActions = function() {
+        var allGood = true;
+        $scope.turns.forEach(function (turn, idx){
+            if (turn.actions.length <= 0) {
+                turn.valid = false;
+            } else {
+                var good = true;
+                for (var i = 0; i < turn.actions.length; i++) {
+                    var isYielding = $scope.turnYield.indexOf(turn.actions[i]) > 0;
+                    if (i < turn.actions.length - 1) {
+                        if (isYielding) {
+                            good = false;
+                            break;
+                        }
+                    } else if (i == turn.actions.length - 1){
+                        if (!isYielding) {
+                            good = false;
+                        }
+                    }
+                }
+                turn.valid = good;
+                if (!good) {
+                    allGood = false;
+                }
+            }
+        });
+        return allGood;
+    };
+
     $scope.changeContentValue = function(content) {
         if (content.value == 'n') {
             content.value = 'y';
@@ -75,51 +142,31 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         }
     });
 
-    function init() {
-        $scope.label2 = [];
-        $scope.label1 = [];
-        $scope.fileData = {};
-        $scope.turns = [];
-    }
-
     $scope.saveData = function() {
         var requestBody = {turns : []};
-        $scope.turns.forEach(function (turn, turnIntex){
+        $scope.turns.forEach(function (turn, turnIndex){
             requestBody.turns.push({
                 "label-1": "",
                 "label-2": []
             });
             turn.label1.forEach(function(label, index){
-                requestBody.turns[turnIntex]["label-1"] = requestBody.turns[turnIntex]["label-1"] + label.row1 + "-" + label.row2;
+                requestBody.turns[turnIndex]["label-1"] = requestBody.turns[turnIndex]["label-1"] + label.row1 + "-" + label.row2;
                 if (index < turn.label1.length - 1) {
-                    requestBody.turns[turnIntex]["label-1"] = requestBody.turns[turnIntex]["label-1"] + " "
+                    requestBody.turns[turnIndex]["label-1"] = requestBody.turns[turnIndex]["label-1"] + " "
                 }
             });
 
             turn.label2.forEach(function(arrContent,index) {
-                requestBody.turns[turnIntex]["label-2"].push(arrContent.content + "-" + arrContent.value);
+                requestBody.turns[turnIndex]["label-2"].push(arrContent.content + "-" + arrContent.value);
             });
         });
-
-        console.log(requestBody);
-/*        $scope.label1.forEach(function(label, index){
-            requestBody["label-1"] = requestBody["label-1"] + label.row1 + "-" + label.row2;
-            if (index < $scope.label1.length -1) {
-                requestBody["label-1"] = requestBody["label-1"] + " "
-            }
-            console.log(requestBody)
-        });
-
-        $scope.label2.forEach(function(arrContent) {
-            requestBody["label-2"].push(arrContent.content + "-" + arrContent.value);
-        });*/
 
         $http.post(SERVER_URL + "save/" + $scope.selectedFile, requestBody).then(function(res) {
             alert("Save " + $scope.selectedFile + " successful")
         }, function (error) {
             alert("Save " + $scope.selectedFile + " failed")
         });
-    }
+    };
 
     function decodeLabel(turns) {
         turns.forEach(function(turn, index){
@@ -147,20 +194,5 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
                 $scope.turns[index].label2.push({content: content, value: value, displayName: displayName});
             })
         });
-    }
-
-    $scope.checkLabel1 = function() {
-        console.log($scope.turns);
-        var check  = false;
-        $scope.turns.forEach(function(turn) {
-            if (!turn.label1 || turn.label1.length <= 0) {
-                check = true;
-            }
-        });
-        return check;
-    };
-
-    function removeLabel1(label, index) {
-        label.splice(index, 1);
     }
 });

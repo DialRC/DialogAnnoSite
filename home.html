@@ -29,61 +29,46 @@
 <div class="container-fluid" ng-controller="viewController">
     <div class="col-md-12">
         <div class="text-center">
-            <selectize config="{valueField: 'name', labelField: 'name', placeholder: 'Pick file', maxItems: 1}" options=listFiles ng-model="selectedFile"></selectize>
+            <selectize config="{valueField: 'name', labelField: 'name', placeholder: 'Pick file', maxItems: 1}"
+                       options=listFiles ng-model="selectedFile"></selectize>
         </div>
         <div class="text-center">
-            <p class="h4">Title: {{fileData.title}}</p>
+            <h4>{{fileData.title}}</h4>
         </div>
-        <div ng-show="!loadingFileData" ng-repeat="turn in turns">
-            <div class="text-center">
-                <p class="h5">Comment: {{turn.comment}}</p>
-            </div>
-            <div class="form-inline text-center">
-                <div class="radio">
-                    <label><input type="radio" ng-model="turn.row1" value="a">A</label>
+        <br>
+        <div class=body>
+            <div ng-show="!loadingFileData" ng-repeat="turn in turns track by $index">
+                <!--Verbal History-->
+                <h5 class="text-center">Up to turn: {{$index+1}}</h5>
+                <div class="history" ng-repeat="h in turn.history">
+                    <p>{{h}}</p>
                 </div>
-                <div class="radio">
-                    <label><input type="radio" ng-model="turn.row1" value="b">B</label>
-                </div>
-                <div class="radio">
-                    <label><input type="radio" ng-model="turn.row1" value="c">C</label>
-                </div>
-            </div>
-
-            <div class="form-inline text-center">
-                <div class="radio">
-                    <label><input type="radio" ng-model="turn.row2" value="1">1</label>
-                </div>
-                <div class="radio">
-                    <label><input type="radio" ng-model="turn.row2" value="2">2</label>
-                </div>
-                <div class="radio">
-                    <label><input type="radio" ng-model="turn.row2" value="3">3</label>
-                </div>
-            </div>
-            <div class="form-inline text-center">
-                <input class="form-control btn-info" ng-disabled="!(turn.row1 && turn.row2)" ng-click="addLabel1(turn)" type="button" value="Enter">
-            </div>
-
-            <div class="text-center">
-                <p class="h5">Selecte-buttons: <span ng-repeat="label in turn.label1">{{label.row1}}-{{label.row2}}&nbsp;<a href="javascript:void(0)" ng-click="removeLabel1(turn.label1,$index)">x</a>&nbsp;&nbsp;</span></p>
-            </div>
-            <div class="form-inline text-center">
-                <div class="form-group">
-                    <div class="pull-left" ng-repeat="label in turn.label2" style="padding-right: 10px">
-                        {{label.content}}&nbsp;<input type="button" class="form-control" ng-click="changeContentValue(label)" value="{{label.displayName}}">&nbsp;
+                <br>
+                <!--Belief States-->
+                <div ng-show="options.length > 1"  ng-repeat="(c, options) in turn.mentions">
+                    <div class="row">
+                        <div class="col-md-2">{{c}}</div>
+                        <div class=col-md-5>
+                            <selectize config="beliefOptions" options=options ng-model="turn.belief[c]">c</selectize>
+                        </div>
                     </div>
                 </div>
+                <br>
+                <!--Terminal Actions-->
+                <h5>Chosen Actions</h5>
+                <selectize config="actOptions" options=terminals ng-model="turn.actions"></selectize>
+                <div class=valid ng-if="turn.valid"> The chosen actions are valid! </div>
+                <div class=invalid ng-if="!turn.valid"> Error detected! </div>
+                <br>
             </div>
-            <hr>
-        </div>
-        <div>
-            <div class="text-center form-inline" style="padding-top: 10px">
-                <input type="button" class="form-control btn-success" value="Save" ng-click="saveData()" ng-disabled = "checkLabel1()">
+            <div>
+                <div class="text-center form-inline" style="padding-top: 10px">
+                    <input type="button" class="form-control btn-success" value="Save" ng-click="saveData()" ng-disabled = "!validateActions()">
+                </div>
             </div>
-        </div>
-        <div class="col-md-12 text-center" ng-show="loadingFileData">
-            <p class="h4">Loading...</p>
+            <div class="col-md-12 text-center" ng-show="loadingFileData">
+                <p class="h4">Loading...</p>
+            </div>
         </div>
     </div>
 </div>
