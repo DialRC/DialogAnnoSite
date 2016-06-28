@@ -18,7 +18,6 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
     $scope.beliefOptions = {
         valueField: 'name',
         labelField: 'name',
-        sortField: 'name',
         searchField: ['name'],
         placeholder: 'Pick slot value',
         delimiter: ',',
