@@ -58,10 +58,10 @@
                 </div>
                 <br>
                 <!--Terminal Actions-->
-                <h5>Chosen the next response to the above dialog context</h5>
+                <h5>Choose the next response to the above dialog context</h5>
                 <selectize config="actOptions" options=terminals ng-model="turn.actions"></selectize>
-                <div class=valid ng-if="turn.valid"> The chosen actions are valid! </div>
-                <div class=invalid ng-if="!turn.valid"> Error detected! </div>
+                <div class=valid ng-if="turn.valid"> The order of actions is valid. </div>
+                <div class=invalid ng-if="!turn.valid"> Detected turn-yielding action in the middle of response! </div>
                 <hr>
             </div>
             <div>
