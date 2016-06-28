@@ -2,6 +2,52 @@ var app = angular.module("app", ['selectize']);
 
 var view1Controller = app.controller("viewController", function ($scope, $http) {
     var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
+    init();
+    function init() {
+        $scope.fileData = {};
+        $scope.turns = [];
+    }
+
+    function getFileData(name) {
+        $scope.loadingFileData = true;
+        $http.get(SERVER_URL + "get/" + $scope.selectedFile).then(function(res){
+            $scope.fileData = res.data.data;
+            $scope.fileData.turns.forEach(function(turn, idx) {
+                $scope.turns.push({
+                    idx: idx,
+                    mentions: turn.mentions,
+                    belief: turn.belief,
+                    history: turn.history,
+                    actions: turn.actions,
+                    valid: true
+                });
+            });
+            // shuffle the turns to make is independent
+            shuffle($scope.turns);
+            $scope.loadingFileData = false;
+        }, function(error) {
+            alert("Can't load file data");
+        });
+    }
+
+    function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+        return array;
+    }
+
     $scope.actOptions = {
         valueField: 'name',
         labelField: 'name',
@@ -24,22 +70,15 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         maxItems: 1
     };
 
-    init();
-    function init() {
-        $scope.fileData = {};
-        $scope.turns = [];
-    }
-
-    // get session wise values
-    $scope.listFiles = [];
-    $scope.terminals = [];
-    $scope.turnYield = [];
-
     $http.get(SERVER_URL + "files").then(function(res){
+        // get session wise values
+        $scope.listFiles = [];
+        $scope.terminals = [];
+        $scope.turnYield = [];
+
         var files = res.data.data;
         var terminals = res.data.terminals;
         var turnYield = res.data.turn_yield;
-
 
         if (files.length > 0) {
             files.forEach(function (file) {
@@ -61,25 +100,6 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         console.log($scope.terminals.length + " terminals");
         console.log($scope.turnYield.length + " expects user input");
     });
-
-    function getFileData(name) {
-        $scope.loadingFileData = true;
-        $http.get(SERVER_URL + "get/" + $scope.selectedFile).then(function(res){
-            $scope.fileData = res.data.data;
-            $scope.fileData.turns.forEach(function(turn) {
-                $scope.turns.push({
-                    mentions: turn.mentions,
-                    belief: turn.belief,
-                    history: turn.history,
-                    actions: turn.actions,
-                    valid: true
-                });
-            });
-            $scope.loadingFileData = false;
-        }, function(error) {
-            alert("Can't load file data");
-        });
-    }
 
     $scope.validateActions = function() {
         var allGood = true;
@@ -134,11 +154,11 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
     $scope.saveData = function() {
         var savedTurns = [];
         $scope.turns.forEach(function(turn) {
-            savedTurns.push({
+            savedTurns[turn.idx] = {
                 mentions: turn.mentions,
                 belief: turn.belief,
                 actions: turn.actions
-            })
+            };
         });
         var requestBody = {turns : savedTurns};
         $http.post(SERVER_URL + "save/" + $scope.selectedFile, requestBody).then(function(res) {
