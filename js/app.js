@@ -1,7 +1,7 @@
 var app = angular.module("app", ['selectize']);
 
 var view1Controller = app.controller("viewController", function ($scope, $http) {
-    var SERVER_URL = "http://localhost:8000/";
+    var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
     $scope.actOptions = {
         valueField: 'name',
         labelField: 'name',

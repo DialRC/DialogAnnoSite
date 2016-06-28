@@ -1,7 +1,13 @@
 div.history {
-    margin: 10px 200px;
+    margin: 10px 100px;
     color: #416F1F;
 }
+
+div.latestReply {
+    margin: 10px 100px;
+    color: #FF2C3C;
+}
+
 div.body {
     margin: 10px 100px;
 }

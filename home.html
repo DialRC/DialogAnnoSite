@@ -40,15 +40,16 @@
         <div class=body>
             <div ng-show="!loadingFileData" ng-repeat="turn in turns track by $index">
                 <!--Verbal History-->
-                <h5 class="text-center">Up to turn: {{$index}}</h5>
-                <div class="history" ng-repeat="h in turn.history">
-                    <p>{{h}}</p>
+                <h5 class="text-center">Dialog Context {{$index}}</h5>
+                <div class="history" ng-repeat="h in turn.history track by $index">
+                    <div class=history ng-if="$index < turn.history.length-1"> <p>{{h}}</p> </div>
+                    <div class=latestReply ng-if="$index == turn.history.length-1"> <p>{{h}}</p> </div>
                 </div>
                 <br>
                 <!--Belief States-->
                 <div ng-show="options.length > 1"  ng-repeat="(c, options) in turn.mentions">
                     <div class="row">
-                        <div class="col-md-2">{{c}}</div>
+                        <div class="col-md-2">Slot: {{c}}</div>
                         <div class=col-md-5>
                             <selectize config="beliefOptions" options=options ng-model="turn.belief[c]">c</selectize>
                         </div>
@@ -56,11 +57,11 @@
                 </div>
                 <br>
                 <!--Terminal Actions-->
-                <h5>Chosen Actions</h5>
+                <h5>Chosen the next response to the above dialog context</h5>
                 <selectize config="actOptions" options=terminals ng-model="turn.actions"></selectize>
                 <div class=valid ng-if="turn.valid"> The chosen actions are valid! </div>
                 <div class=invalid ng-if="!turn.valid"> Error detected! </div>
-                <br>
+                <hr>
             </div>
             <div>
                 <div class="saveArea">
