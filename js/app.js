@@ -86,6 +86,9 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
             } else {
                 var good = true;
                 for (var i = 0; i < turn.actions.length; i++) {
+                    if (turn.actions[i].indexOf('next') > -1) {
+                        continue;
+                    }
                     var isYielding = $scope.turnYield.indexOf(turn.actions[i]) > -1;
                     if (i < turn.actions.length - 1) {
                         if (isYielding) {
