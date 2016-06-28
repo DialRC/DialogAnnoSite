@@ -5,6 +5,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
     $scope.actOptions = {
         valueField: 'name',
         labelField: 'name',
+        searchField: ['name'],
         placeholder: 'Pick Actions',
         delimiter: ',',
         maxItems: 10,
@@ -16,6 +17,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
     $scope.beliefOptions = {
         valueField: 'name',
         labelField: 'name',
+        searchField: ['name'],
         placeholder: 'Pick slot value',
         delimiter: ',',
         maxItems: 1
