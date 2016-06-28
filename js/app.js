@@ -80,7 +80,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
 
     $scope.validateActions = function() {
         var allGood = true;
-        $scope.turns.forEach(function (turn, idx){
+        $scope.turns.forEach(function (turn){
             if (turn.actions.length <= 0) {
                 turn.valid = false;
             } else {
