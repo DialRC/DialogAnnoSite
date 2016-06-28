@@ -41,7 +41,7 @@
         <div class=body>
             <div ng-show="!loadingFileData" ng-repeat="turn in turns track by $index">
                 <!--Verbal History-->
-                <h5 class="text-center">Dialog Context {{$index}}</h5>
+                <h5 class="text-center">Dialog Context {{$index+1}}</h5>
                 <div class="history" ng-repeat="h in turn.history track by $index">
                     <div class=history ng-if="$index < turn.history.length-1"> <p>{{h}}</p> </div>
                     <div class=latestReply ng-if="$index == turn.history.length-1"> <p>{{h}}</p> </div>
