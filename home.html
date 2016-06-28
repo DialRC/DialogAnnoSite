@@ -32,6 +32,7 @@
             <selectize config="{valueField: 'name', labelField: 'name', placeholder: 'Pick file', maxItems: 1}"
                        options=listFiles ng-model="selectedFile"></selectize>
         </div>
+        <br>
         <div class="text-center">
             <h4>{{fileData.title}}</h4>
         </div>
@@ -39,7 +40,7 @@
         <div class=body>
             <div ng-show="!loadingFileData" ng-repeat="turn in turns track by $index">
                 <!--Verbal History-->
-                <h5 class="text-center">Up to turn: {{$index+1}}</h5>
+                <h5 class="text-center">Up to turn: {{$index}}</h5>
                 <div class="history" ng-repeat="h in turn.history">
                     <p>{{h}}</p>
                 </div>
@@ -62,7 +63,7 @@
                 <br>
             </div>
             <div>
-                <div class="text-center form-inline" style="padding-top: 10px">
+                <div class="saveArea">
                     <input type="button" class="form-control btn-success" value="Save" ng-click="saveData()" ng-disabled = "!validateActions()">
                 </div>
             </div>

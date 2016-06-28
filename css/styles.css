@@ -12,3 +12,9 @@ div.valid {
 div.invalid {
     color: #FF2C3C;
 }
+
+div.saveArea {
+    padding-bottom: 50px;
+    padding-top: 50px;
+    text-align: center;
+}

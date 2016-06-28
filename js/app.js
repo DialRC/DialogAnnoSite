@@ -10,7 +10,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         maxItems: 10,
         onChange: function(value) {
             console.log("Check valid");
-            validateActions();
+            $scope.validateActions();
         }
     };
     $scope.beliefOptions = {
@@ -23,8 +23,6 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
 
     init();
     function init() {
-        $scope.label2 = [];
-        $scope.label1 = [];
         $scope.fileData = {};
         $scope.turns = [];
     }
@@ -61,16 +59,6 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         console.log($scope.turnYield.length + " expects user input");
     });
 
-    function processContent(turns) {
-        turns.forEach(function(turn, index){
-            var contentArrs = [];
-            turn.content.forEach(function(content) {
-                contentArrs.push({content: content, value: 'n', displayName: 'No'});
-            });
-            $scope.turns[index].label2 = contentArrs;
-        });
-    }
-
     function getFileData(name) {
         $scope.loadingFileData = true;
         $http.get(SERVER_URL + "get/" + $scope.selectedFile).then(function(res){
@@ -82,13 +70,8 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
                     history: turn.history,
                     actions: turn.actions,
                     valid: true
-                })
+                });
             });
-            if ($scope.fileData.turns[0].label) {
-                decodeLabel($scope.fileData.turns);
-            } else {
-                processContent($scope.fileData.turns);
-            }
             $scope.loadingFileData = false;
         }, function(error) {
             alert("Can't load file data");
@@ -103,7 +86,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
             } else {
                 var good = true;
                 for (var i = 0; i < turn.actions.length; i++) {
-                    var isYielding = $scope.turnYield.indexOf(turn.actions[i]) > 0;
+                    var isYielding = $scope.turnYield.indexOf(turn.actions[i]) > -1;
                     if (i < turn.actions.length - 1) {
                         if (isYielding) {
                             good = false;
@@ -143,56 +126,19 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
     });
 
     $scope.saveData = function() {
-        var requestBody = {turns : []};
-        $scope.turns.forEach(function (turn, turnIndex){
-            requestBody.turns.push({
-                "label-1": "",
-                "label-2": []
-            });
-            turn.label1.forEach(function(label, index){
-                requestBody.turns[turnIndex]["label-1"] = requestBody.turns[turnIndex]["label-1"] + label.row1 + "-" + label.row2;
-                if (index < turn.label1.length - 1) {
-                    requestBody.turns[turnIndex]["label-1"] = requestBody.turns[turnIndex]["label-1"] + " "
-                }
-            });
-
-            turn.label2.forEach(function(arrContent,index) {
-                requestBody.turns[turnIndex]["label-2"].push(arrContent.content + "-" + arrContent.value);
-            });
+        var savedTurns = [];
+        $scope.turns.forEach(function(turn) {
+            savedTurns.push({
+                mentions: turn.mentions,
+                belief: turn.belief,
+                actions: turn.actions
+            })
         });
-
+        var requestBody = {turns : savedTurns};
         $http.post(SERVER_URL + "save/" + $scope.selectedFile, requestBody).then(function(res) {
             alert("Save " + $scope.selectedFile + " successful")
         }, function (error) {
             alert("Save " + $scope.selectedFile + " failed")
         });
     };
-
-    function decodeLabel(turns) {
-        turns.forEach(function(turn, index){
-            var label1 = turn.label["label-1"].split(" ");
-            label1.forEach(function(lb) {
-                var data = lb.split("-");
-                if (!$scope.turns[index].label1) {
-                    $scope.turns[index].label1 = [];
-                }
-                $scope.turns[index].label1.push({row1: angular.copy(data[0]), row2: angular.copy(data[1])});
-            });
-
-            turn.label["label-2"].forEach(function(lb) {
-                var value = lb.substring(lb.length - 1,lb.length);
-                var content = lb.substring(0, lb.length - 2);
-                var displayName = "";
-                if (value == 'n') {
-                    displayName = "No"
-                } else {
-                    displayName = "Yes"
-                }
-                if (!$scope.turns[index].label2) {
-                    $scope.turns[index].label2 = [];
-                }
-                $scope.turns[index].label2.push({content: content, value: value, displayName: displayName});
-            })
-        });
-    }
 });
