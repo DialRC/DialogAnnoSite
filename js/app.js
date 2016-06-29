@@ -17,6 +17,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
                     idx: idx,
                     mentions: turn.mentions,
                     belief: turn.belief,
+                    slot_desc: turn.slot_desc,
                     history: turn.history,
                     actions: turn.actions,
                     valid: true

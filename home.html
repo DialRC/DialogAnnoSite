@@ -50,8 +50,8 @@
                 <!--Belief States-->
                 <div ng-show="options.length > 1"  ng-repeat="(c, options) in turn.mentions">
                     <div class="row">
-                        <div class="col-md-2">Slot: {{c}}</div>
-                        <div class=col-md-5>
+                        <div class="col-md-6"><b>{{c}}:</b> {{turn.slot_desc[c]}}</div>
+                        <div class=col-md-6>
                             <selectize config="beliefOptions" options=options ng-model="turn.belief[c]">c</selectize>
                         </div>
                     </div>
