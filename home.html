@@ -34,14 +34,14 @@
         </div>
         <br>
         <div class="text-center">
-            <h4>{{fileData.title}}</h4>
+            <h3>{{fileData.title}}</h3>
             <h6 ng-show="fileData.from_label">Already Labelled</h6>
         </div>
         <br>
         <div class=body>
             <div ng-show="!loadingFileData" ng-repeat="turn in turns track by $index">
                 <!--Verbal History-->
-                <h5 class="text-center">Dialog Context {{$index+1}}</h5>
+                <h4 class="text-center">Dialog Context {{$index+1}}</h4>
                 <div class="history" ng-repeat="h in turn.history track by $index">
                     <div class=history ng-if="$index < turn.history.length-1"> <p>{{h}}</p> </div>
                     <div class=latestReply ng-if="$index == turn.history.length-1"> <p>{{h}}</p> </div>
@@ -58,11 +58,13 @@
                 </div>
                 <br>
                 <!--Terminal Actions-->
-                <h5>Choose the next response to the above dialog context</h5>
+                <h5>Choose the next response to the above dialog context:</h5>
                 <selectize config="actOptions" options=terminals ng-model="turn.actions"></selectize>
                 <div class=valid ng-if="turn.valid"> The order of actions is valid. </div>
                 <div class=invalid ng-if="!turn.valid"> Detected turn-yielding action in the middle of response! </div>
-                <hr>
+                <div class="preview"><b>Preview:</b> {{turn.sent}}</div>
+                <br>
+                <hr class="fancy">
             </div>
             <div>
                 <div class="saveArea">

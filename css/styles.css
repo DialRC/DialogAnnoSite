@@ -3,6 +3,11 @@ div.history {
     color: #416F1F;
 }
 
+div.preview {
+    margin: 10px 0;
+    color: #925210;
+}
+
 div.latestReply {
     margin: 10px 100px;
     color: #FF2C3C;
@@ -23,4 +28,11 @@ div.saveArea {
     padding-bottom: 50px;
     padding-top: 50px;
     text-align: center;
+}
+
+hr.fancy {
+    height: 30px;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px 0 0 0;
 }

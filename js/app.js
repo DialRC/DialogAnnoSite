@@ -8,6 +8,22 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         $scope.turns = [];
     }
 
+    function mapToSent(actions) {
+        var sent = "";
+        actions.forEach(function(act) {
+            if (act in $scope.nlg) {
+                sent = sent + " " + $scope.nlg[act];
+            }
+        });
+        return sent;
+    }
+
+    function updateTurnSent() {
+        $scope.turns.forEach(function (turn){
+            turn.sent = mapToSent(turn.actions);
+        });
+    }
+
     function getFileData(name) {
         $scope.loadingFileData = true;
         $http.get(SERVER_URL + "get/" + $scope.selectedFile).then(function(res){
@@ -20,6 +36,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
                     slot_desc: turn.slot_desc,
                     history: turn.history,
                     actions: turn.actions,
+                    sent: mapToSent(turn.actions),
                     valid: true
                 });
             });
@@ -60,6 +77,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         onChange: function(value) {
             console.log("Check valid");
             $scope.validateActions();
+            updateTurnSent();
         }
     };
     $scope.beliefOptions = {
@@ -76,10 +94,12 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         $scope.listFiles = [];
         $scope.terminals = [];
         $scope.turnYield = [];
+        $scope.nlg = [];
 
         var files = res.data.data;
         var terminals = res.data.terminals;
         var turnYield = res.data.turn_yield;
+        $scope.nlg = res.data.nlg;
 
         if (files.length > 0) {
             files.forEach(function (file) {
@@ -100,6 +120,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         }
         console.log($scope.terminals.length + " terminals");
         console.log($scope.turnYield.length + " expects user input");
+        console.log($scope.nlg.length + " nlg keys");
     });
 
     $scope.validateActions = function() {
