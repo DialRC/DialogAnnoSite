@@ -120,7 +120,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         }
         console.log($scope.terminals.length + " terminals");
         console.log($scope.turnYield.length + " expects user input");
-        console.log($scope.nlg.length + " nlg keys");
+        console.log(Object.keys($scope.nlg).length + " nlg keys");
     });
 
     $scope.validateActions = function() {
