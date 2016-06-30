@@ -29,8 +29,7 @@
 <div class="container-fluid" ng-controller="viewController">
     <div class="col-md-12">
         <div class="text-center">
-            <selectize config="{valueField: 'name', labelField: 'name', placeholder: 'Pick file', maxItems: 1}"
-                       options=listFiles ng-model="selectedFile"></selectize>
+            <selectize config="fileOptions" options=listFiles ng-model="selectedFile"></selectize>
         </div>
         <br>
         <div class="text-center">

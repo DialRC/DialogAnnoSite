@@ -66,6 +66,13 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         return array;
     }
 
+    $scope.fileOptions = {
+        valueField: 'name',
+        labelField: 'label',
+        placeholder: 'Pick file',
+        maxItems: 1
+    };
+
     $scope.actOptions = {
         valueField: 'name',
         labelField: 'name',
@@ -102,8 +109,8 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         $scope.nlg = res.data.nlg;
 
         if (files.length > 0) {
-            files.forEach(function (file) {
-                $scope.listFiles.push({name: file});
+            files.forEach(function (file, f_idx) {
+                $scope.listFiles.push({name: file, label: (f_idx+1)+". "+ file});
             });
 
             $scope.selectedFile = files[0];
