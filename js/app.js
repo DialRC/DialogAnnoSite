@@ -2,18 +2,19 @@ var app = angular.module("app", ['selectize']);
 
 var view1Controller = app.controller("viewController", function ($scope, $http) {
     var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
+    // var SERVER_URL = "http://127.0.0.1:8000/";
     init();
     function init() {
         $scope.fileData = {};
         $scope.turns = [];
     }
 
-    function mapToSent(actions) {
+    function mapToSent(actions, chat) {
         var sent = "";
-        actions.forEach(function(act, idx) {
+        actions.forEach(function(act) {
             if (act in $scope.nlg) {
                 if (act == "qachat_bot") {
-                    sent = sent + " " + $scope.turns[idx].chat + ".";
+                    sent = sent + " " + chat + ".";
                 } else {
                     sent = sent + " " + $scope.nlg[act];
                 }
@@ -24,7 +25,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
 
     function updateTurnSent() {
         $scope.turns.forEach(function (turn, turn_idx){
-            turn.sent = mapToSent(turn.actions, turn_idx);
+            turn.sent = mapToSent(turn.actions, $scope.turns[turn_idx].chat);
         });
     }
 
@@ -41,7 +42,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
                     history: turn.history,
                     chat: turn.chat,
                     actions: turn.actions,
-                    sent: mapToSent(turn.actions),
+                    sent: mapToSent(turn.actions, turn.chat),
                     valid: true
                 });
             });
