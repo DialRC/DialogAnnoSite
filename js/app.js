@@ -46,7 +46,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
                 });
             });
             // shuffle the turns to make is independent
-            shuffle($scope.turns);
+            // shuffle($scope.turns);
             $scope.loadingFileData = false;
         }, function(error) {
             alert("Can't load file data");
