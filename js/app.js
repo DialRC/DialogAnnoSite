@@ -10,17 +10,21 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
 
     function mapToSent(actions) {
         var sent = "";
-        actions.forEach(function(act) {
+        actions.forEach(function(act, idx) {
             if (act in $scope.nlg) {
-                sent = sent + " " + $scope.nlg[act];
+                if (act == "qachat_bot") {
+                    sent = sent + " " + $scope.turns[idx].chat + ".";
+                } else {
+                    sent = sent + " " + $scope.nlg[act];
+                }
             }
         });
         return sent;
     }
 
     function updateTurnSent() {
-        $scope.turns.forEach(function (turn){
-            turn.sent = mapToSent(turn.actions);
+        $scope.turns.forEach(function (turn, turn_idx){
+            turn.sent = mapToSent(turn.actions, turn_idx);
         });
     }
 
@@ -35,6 +39,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
                     belief: turn.belief,
                     slot_desc: turn.slot_desc,
                     history: turn.history,
+                    chat: turn.chat,
                     actions: turn.actions,
                     sent: mapToSent(turn.actions),
                     valid: true
