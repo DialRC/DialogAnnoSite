@@ -33,6 +33,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         $scope.loadingFileData = true;
         $http.get(SERVER_URL + "get/" + $scope.selectedFile).then(function(res){
             $scope.fileData = res.data.data;
+            console.log($scope.fileData.turns);
             $scope.fileData.turns.forEach(function(turn, idx) {
                 $scope.turns.push({
                     idx: idx,
@@ -144,7 +145,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
             } else {
                 var good = true;
                 for (var i = 0; i < turn.actions.length; i++) {
-                    if (turn.actions[i].indexOf('next') > -1) {
+                    if (turn.actions[i].indexOf('next') > -1 || turn.actions[i].indexOf('newcall') > -1) {
                         continue;
                     }
                     var isYielding = $scope.turnYield.indexOf(turn.actions[i]) > -1;
