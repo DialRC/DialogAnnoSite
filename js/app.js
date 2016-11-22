@@ -33,6 +33,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
         $scope.loadingFileData = true;
         $http.get(SERVER_URL + "get/" + $scope.selectedFile).then(function(res){
             $scope.fileData = res.data.data;
+            console.log($scope.fileData);
             console.log($scope.fileData.turns);
             $scope.fileData.turns.forEach(function(turn, idx) {
                 $scope.turns.push({

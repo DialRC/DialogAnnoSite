@@ -36,6 +36,9 @@
             <h3>{{fileData.title}}</h3>
             <h6 ng-show="fileData.from_label">Already Labelled</h6>
         </div>
+        <div class="text-center">
+            <h5>{{fileData.profile}}</h5>
+        </div>
         <br>
         <div class=body>
             <div ng-show="!loadingFileData" ng-repeat="turn in turns track by $index">
