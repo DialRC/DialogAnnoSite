@@ -1,16 +1,25 @@
-div.history {
-    margin: 10px 100px;
-    color: #416F1F;
+div.sysUtt {
+    color: #186e0c;
 }
+div.usrUtt {
+    color: #d00512;
+}
+
 
 div.preview {
     margin: 10px 0;
     color: #925210;
 }
 
+div.history {
+    margin: 10px 50px;
+    color: #416F1F;
+}
+
+
 div.latestReply {
-    margin: 10px 100px;
-    color: #FF2C3C;
+    margin: 10px 50px;
+    color: #d00512;
 }
 
 div.body {

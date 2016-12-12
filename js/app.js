@@ -95,6 +95,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
             updateTurnSent();
         }
     };
+
     $scope.beliefOptions = {
         valueField: 'name',
         labelField: 'name',
