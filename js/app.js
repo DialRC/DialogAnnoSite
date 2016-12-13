@@ -216,9 +216,10 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
         $scope.utterances = [];
         $scope.intent_tags = [];
         $scope.domain_tags = [];
-        var intent_tags = ["Inform", "Request", "wh-question", "yn-question",
-            "Confirm", "Disconfirm", "Restart",
-            "Goodbye", "Ask_repeat", "Other"];
+        var intent_tags = ["inform", "request", "wh-question", "yn-question",
+            "confirm", "disconfirm", "restart",
+            "goodbye", "ask_repeat", "dont_care", "Other"];
+
         intent_tags.forEach(function (t) {
             $scope.intent_tags.push({name: t});
         });
@@ -303,13 +304,42 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
         var requestBody = {utterances : savedUtts};
         console.log(requestBody);
         $http.post(SERVER_URL + "save_utts", requestBody).then(function(res) {
-            alert("Save " + $scope.selectedBatch + " successful");
+            alert("Save batch-" + $scope.selectedBatch+1 + " successful");
             console.log(res.data);
             $scope.label_data_size = res.data.data;
             console.log("Updated " + res.data.data.toString() + " utts");
         }, function (error) {
-            alert("Save " + $scope.selectedBatch + " failed")
+            alert("Save batch-" + $scope.selectedBatch + " failed")
         });
     };
 
+});
+
+var cheatsheetViewController = app.controller("cheatsheetController", function($scope, $http) {
+    // cheat sheet
+    $scope.intent_defs = [
+        {tag: "inform", def: "give some information"},
+        {tag:"request", def: "ask for some information"},
+        {tag: "wh-question", def:"a question begin with WH"},
+        {tag: "yn-question", def:"a question expects Y/N answer"},
+        {tag: "confirm", def:"express yes"},
+        {tag: "disconfirm", def:"express no"},
+        {tag: "restart", def:"special command to reset Skylar to initial state"},
+        {tag: "goodbye", def:"intend to end the dialog"},
+        {tag: "ask_repeat", def:"request skylar to repeat the last prompt"},
+        {tag: "dont_care", def:"anything is fine"},
+        {tag: "other", def:"anything else"}];
+    $scope.domain_defs = [
+        {tag: "art", def: "give some information"},
+        {tag: "food", def: "restaurant"},
+        {tag: "travel", def: "flights, bus info etc"},
+        {tag: "weather", def: "weather info"},
+        {tag: "game", def: "play a game"},
+        {tag: "QA", def: " wikipedia-like question answering"},
+        {tag: "shopping", def: "shopping mall"},
+        {tag: "skills", def: "what skill does Skylar have"},
+        {tag: "news", def: "about news, latest events"},
+        {tag: "translation", def: "e.g. en to fr"},
+        {tag: "movie", def: "latest movie, where to watch"},
+        {tag: "other", def: "anything else"}];
 });

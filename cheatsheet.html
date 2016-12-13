@@ -26,7 +26,7 @@
 <body>
 
 
-<div class="container-fluid" ng-controller="dialogViewController">
+<div class="container-fluid" ng-controller="cheatsheetController">
     <div class="col-md-12">
         <div class="text-center">
             <a href="history.html" class="btn btn-lg">History</a>
@@ -34,27 +34,19 @@
             <a href="home.html" class="btn btn-lg">End-to-End</a>
             <a href="cheatsheet.html" class="btn btn-lg">CheatSheet</a>
         </div>
-        <div class="text-center">
-            <selectize config="fileOptions" options=listFiles ng-model="selectedFile"></selectize>
-        </div>
         <br>
-        <div class="text-center">
-            <h3>{{fileData.title}}</h3>
-            <h6 ng-show="fileData.from_label">Already Labelled</h6>
-        </div>
-        <div class="text-center">
-            <h5>{{fileData.profile}}</h5>
-        </div>
-        <br>
-        <div class=body>
-            <!--Verbal History-->
-            <h4 class="text-center">Dialog Context {{$index+1}}</h4>
-            <div class="history" ng-repeat="h in turns[turns.length-1].history track by $index">
-                <div class=sysUtt ng-if="$index % 2 == 0"> <p>{{h}}</p> </div>
-                <div class=usrUtt ng-if="$index % 2 != 0"> <p>{{h}}</p> </div>
+        <div class="body">
+            <div class="col-md-6">
+                <h4>Intent Tags</h4>
+                <div ng-repeat="intent_def in intent_defs">
+                    <p><b>{{intent_def.tag}}:</b> {{intent_def.def}}</p>
+                </div>
             </div>
-            <div class="col-md-12 text-center" ng-show="loadingFileData">
-                <p class="h4">Loading...</p>
+            <div class="col-md-6">
+                <h4>Domain Tags</h4>
+                <div ng-repeat="domain_def in domain_defs">
+                    <p><b>{{domain_def.tag}}:</b> {{domain_def.def}}</p>
+                </div>
             </div>
         </div>
     </div>
