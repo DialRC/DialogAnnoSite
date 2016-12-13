@@ -11,6 +11,10 @@ div.query {
 span.query {
     color: #050000;
 }
+span.foot_note {
+    font-size: 10px;
+    color: #d97509;
+}
 
 div.preview {
     margin: 10px 0;

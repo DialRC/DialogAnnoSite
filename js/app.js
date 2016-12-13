@@ -240,7 +240,8 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
                     key: utt.key,
                     query: utt.query,
                     intents: utt.intents,
-                    domains: utt.domains
+                    domains: utt.domains,
+                    last_update: utt.last_update
                 });
             });
             console.log($scope.batchData);

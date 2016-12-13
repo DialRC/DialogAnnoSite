@@ -46,7 +46,8 @@
             <div ng-show="!loadingFileData" ng-repeat="utt in utterances track by $index">
                 <!--Query-->
                 <div class="query">
-                    <h4>User Query: <span class="query">{{utt.query}}</span> </h4>
+                    <h4>User Query: <span class="query">{{utt.query}}</span>
+                        <span class="foot_note"> (last update: {{utt.last_update}}) </span> </h4>
                 </div>
                 <!--Tags-->
                 <div class="col-md-6">
