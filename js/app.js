@@ -1,6 +1,6 @@
 var app = angular.module("app", ['selectize']);
 
-var view1Controller = app.controller("viewController", function ($scope, $http) {
+var dialogViewController = app.controller("dialogViewController", function ($scope, $http) {
     var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
     // var SERVER_URL = "http://127.0.0.1:8000/";
     init();
@@ -31,7 +31,7 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
 
     function getFileData(name) {
         $scope.loadingFileData = true;
-        $http.get(SERVER_URL + "get/" + $scope.selectedFile).then(function(res){
+        $http.get(SERVER_URL + "get_dialog/" + $scope.selectedFile).then(function(res){
             $scope.fileData = res.data.data;
             console.log($scope.fileData);
             console.log($scope.fileData.turns);
@@ -206,4 +206,109 @@ var view1Controller = app.controller("viewController", function ($scope, $http) 
             alert("Save " + $scope.selectedFile + " failed")
         });
     };
+});
+
+var nluViewController = app.controller("nluViewController", function ($scope, $http) {
+    var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
+
+    init();
+    function init() {
+        $scope.utterances = [];
+        $scope.intent_tags = [];
+        $scope.domain_tags = [];
+        var intent_tags = ["Inform", "Request", "wh-question", "yn-question",
+            "Confirm", "Disconfirm", "Restart",
+            "Goodbye", "Ask_repeat", "Other"];
+        intent_tags.forEach(function (t) {
+            $scope.intent_tags.push({name: t});
+        });
+        var domain_tags = ["art", "food", "travel", "weather",
+            "QA", "shopping", "skills", "news", "translation", "movie"];
+        domain_tags.forEach(function (t) {
+            $scope.domain_tags.push({name: t});
+        });
+    }
+
+    function getBatch(name) {
+        $scope.loadingFileData = true;
+        console.log("Fetch batch " + $scope.selectedBatch);
+        $http.get(SERVER_URL + "get_utt_batch/" + $scope.selectedBatch).then(function(res){
+            $scope.batchData = res.data.data;
+            //console.log(res.data.data);
+            $scope.batchData.forEach(function(utt, idx) {
+                $scope.utterances.push({
+                    key: utt.key,
+                    query: utt.query,
+                    intents: utt.intents,
+                    domains: utt.domains
+                });
+            });
+            console.log($scope.batchData);
+            $scope.loadingFileData = false;
+        }, function(error) {
+            alert("Can't load file data");
+        });
+    }
+
+    $http.get(SERVER_URL + "utt_batches").then(function(res){
+        // get session wise values
+        $scope.listBatches = [];
+        $scope.data_size = res.data.data_size;
+        $scope.label_data_size = res.data.label_data_size;
+
+        for (var i=0; i < res.data.batch_number; i++) {
+            $scope.listBatches.push({name: i.toString(), label: "batch " + (i+1).toString()});
+        }
+        $scope.selectedBatch = "0";
+        console.log($scope.data_size + " utterance in total");
+        console.log($scope.label_data_size + " already labelled");
+        console.log($scope.listBatches.length + " batches");
+    });
+
+    $scope.batchOptions = {
+        valueField: 'name',
+        labelField: 'label',
+        placeholder: 'Pick batch',
+        maxItems: 1
+    };
+
+    $scope.tagOptions = {
+        valueField: 'name',
+        labelField: 'name',
+        sortField: 'name',
+        searchField: ['name'],
+        placeholder: 'Pick Tags',
+        delimiter: ',',
+        maxItems: 10
+    };
+
+    $scope.$watch("selectedBatch", function (newValue){
+        if (newValue) {
+            init();
+            getBatch(newValue);
+        }
+    });
+
+    $scope.saveData = function() {
+        var savedUtts = [];
+        $scope.utterances.forEach(function(utt) {
+            savedUtts.push({
+                key: utt.key,
+                query: utt.query,
+                intents: utt.intents,
+                domains: utt.domains
+            });
+        });
+        var requestBody = {utterances : savedUtts};
+        console.log(requestBody);
+        $http.post(SERVER_URL + "save_utts", requestBody).then(function(res) {
+            alert("Save " + $scope.selectedBatch + " successful");
+            console.log(res.data);
+            $scope.label_data_size = res.data.data;
+            console.log("Updated " + res.data.data.toString() + " utts");
+        }, function (error) {
+            alert("Save " + $scope.selectedBatch + " failed")
+        });
+    };
+
 });

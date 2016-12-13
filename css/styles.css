@@ -5,6 +5,12 @@ div.usrUtt {
     color: #d00512;
 }
 
+div.query {
+    color: #d97509;
+}
+span.query {
+    color: #050000;
+}
 
 div.preview {
     margin: 10px 0;

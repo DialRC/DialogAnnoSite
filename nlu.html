@@ -26,7 +26,7 @@
 <body>
 
 
-<div class="container-fluid" ng-controller="viewController">
+<div class="container-fluid" ng-controller="nluViewController">
     <div class="col-md-12">
         <div class="text-center">
             <a href="history.html" class="btn btn-lg">History</a>
@@ -34,48 +34,36 @@
             <a href="home.html" class="btn btn-lg">End-to-End</a>
         </div>
         <div class="text-center">
-            <selectize config="fileOptions" options=listFiles ng-model="selectedFile"></selectize>
+            <selectize config="batchOptions" options=listBatches ng-model="selectedBatch"></selectize>
         </div>
         <br>
         <div class="text-center">
-            <h3>{{fileData.title}}</h3>
-            <h6 ng-show="fileData.from_label">Already Labelled</h6>
-        </div>
-        <div class="text-center">
-            <h5>{{fileData.profile}}</h5>
+            <h4>Total number of utterance {{data_size}}</h4>
+            <h4>Already labelled {{label_data_size}}</h4>
         </div>
         <br>
         <div class=body>
-            <div ng-show="!loadingFileData" ng-repeat="turn in turns track by $index">
-                <!--Verbal History-->
-                <h4 class="text-center">Dialog Context {{$index+1}}</h4>
-                <div class="history" ng-repeat="h in turn.history track by $index">
-                    <div class=history ng-if="$index < turn.history.length-1"> <p>{{h}}</p> </div>
-                    <div class=latestReply ng-if="$index == turn.history.length-1"> <p>{{h}}</p> </div>
+            <div ng-show="!loadingFileData" ng-repeat="utt in utterances track by $index">
+                <!--Query-->
+                <div class="query">
+                    <h4>User Query: <span class="query">{{utt.query}}</span> </h4>
                 </div>
-                <br>
-                <!--Belief States-->
-                <div ng-show="options.length > 1"  ng-repeat="(c, options) in turn.mentions">
-                    <div class="row">
-                        <div class="col-md-6"><b>{{c}}:</b> {{turn.slot_desc[c]}}</div>
-                        <div class=col-md-6>
-                            <selectize config="beliefOptions" options=options ng-model="turn.belief[c]">c</selectize>
-                        </div>
-                    </div>
+                <!--Tags-->
+                <div class="col-md-6">
+                    <h5>Select all valid speech acts:</h5>
+                    <selectize config="tagOptions" options=intent_tags ng-model="utt.intents"></selectize>
                 </div>
-                <br>
-                <!--Terminal Actions-->
-                <h5>Choose the next response to the above dialog context:</h5>
-                <selectize config="actOptions" options=terminals ng-model="turn.actions"></selectize>
-                <div class=valid ng-if="turn.valid"> The order of actions is valid. </div>
-                <div class=invalid ng-if="!turn.valid"> Detected turn-yielding action in the middle of response! </div>
-                <div class="preview"><b>Preview:</b> {{turn.sent}}</div>
-                <br>
-                <hr class="fancy">
+                <div class="col-md-6">
+                    <h5>Select all domains:</h5>
+                    <selectize config="tagOptions" options=domain_tags ng-model="utt.domains"></selectize>
+                </div>
+                <div class="col-md-12 text-center">
+                    <br>
+                </div>
             </div>
             <div>
                 <div class="saveArea">
-                    <input type="button" class="form-control btn-success" value="Save" ng-click="saveData()" ng-disabled = "!validateActions()">
+                    <input type="button" class="form-control btn-success" value="Save" ng-click="saveData()">
                 </div>
             </div>
             <div class="col-md-12 text-center" ng-show="loadingFileData">
