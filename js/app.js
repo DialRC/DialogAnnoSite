@@ -216,7 +216,7 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
         $scope.utterances = [];
         $scope.intent_tags = [];
         $scope.domain_tags = [];
-        var intent_tags = ["inform", "request", "wh-question", "yn-question",
+        var intent_tags = ["greeting", "inform", "request", "wh-question", "yn-question",
             "confirm", "disconfirm", "restart",
             "goodbye", "ask_repeat", "dont_care", "other"];
 
@@ -320,8 +320,9 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
 var cheatsheetViewController = app.controller("cheatsheetController", function($scope, $http) {
     // cheat sheet
     $scope.intent_defs = [
-        {tag: "inform", def: "give some information"},
-        {tag:"request", def: "ask for some information"},
+        {tag: "greeting", def: "say hi"},
+        {tag: "inform", def: "give some information about slots values"},
+        {tag:"request", def: "ask for something, e.g. tell me, give me, I'd like etc"},
         {tag: "wh-question", def:"a question begin with WH"},
         {tag: "yn-question", def:"a question expects Y/N answer"},
         {tag: "confirm", def:"express yes"},
@@ -329,7 +330,7 @@ var cheatsheetViewController = app.controller("cheatsheetController", function($
         {tag: "restart", def:"special command to reset Skylar to initial state"},
         {tag: "goodbye", def:"intend to end the dialog"},
         {tag: "ask_repeat", def:"request skylar to repeat the last prompt"},
-        {tag: "dont_care", def:"anything is fine"},
+        {tag: "dont_care", def:"anything is fine, I don't care"},
         {tag: "other", def:"when there is a clear intent, but not in the list"}];
     $scope.domain_defs = [
         {tag: "art", def: "give some information"},
