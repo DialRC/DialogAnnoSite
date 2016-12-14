@@ -223,7 +223,7 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
         intent_tags.forEach(function (t) {
             $scope.intent_tags.push({name: t});
         });
-        var domain_tags = ["art", "food", "travel", "weather", "game",
+        var domain_tags = ["art", "food", "hotel", "bus", "flight", "weather", "game",
             "QA", "shopping", "skills", "news", "translation", "movie", "other"];
         domain_tags.forEach(function (t) {
             $scope.domain_tags.push({name: t});
@@ -330,11 +330,13 @@ var cheatsheetViewController = app.controller("cheatsheetController", function($
         {tag: "goodbye", def:"intend to end the dialog"},
         {tag: "ask_repeat", def:"request skylar to repeat the last prompt"},
         {tag: "dont_care", def:"anything is fine"},
-        {tag: "other", def:"anything else"}];
+        {tag: "other", def:"when there is a clear intent, but not in the list"}];
     $scope.domain_defs = [
         {tag: "art", def: "give some information"},
         {tag: "food", def: "restaurant"},
-        {tag: "travel", def: "flights, bus info etc"},
+        {tag: "hotel", def: "hotels"},
+        {tag: "bus", def: "bus schedule"},
+        {tag: "flight", def: "flights inforation"},
         {tag: "weather", def: "weather info"},
         {tag: "game", def: "play a game"},
         {tag: "QA", def: " wikipedia-like question answering"},
@@ -343,5 +345,5 @@ var cheatsheetViewController = app.controller("cheatsheetController", function($
         {tag: "news", def: "about news, latest events"},
         {tag: "translation", def: "e.g. en to fr"},
         {tag: "movie", def: "latest movie, where to watch"},
-        {tag: "other", def: "anything else"}];
+        {tag: "other", def: "when there is a clear topic, but not in the list"}];
 });
