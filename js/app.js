@@ -218,7 +218,7 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
         $scope.domain_tags = [];
         var intent_tags = ["inform", "request", "wh-question", "yn-question",
             "confirm", "disconfirm", "restart",
-            "goodbye", "ask_repeat", "dont_care", "Other"];
+            "goodbye", "ask_repeat", "dont_care", "other"];
 
         intent_tags.forEach(function (t) {
             $scope.intent_tags.push({name: t});
@@ -242,6 +242,7 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
                     query: utt.query,
                     intents: utt.intents,
                     domains: utt.domains,
+                    black_domains: utt.black_domains,
                     last_update: utt.last_update
                 });
             });
@@ -298,7 +299,8 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
                 key: utt.key,
                 query: utt.query,
                 intents: utt.intents,
-                domains: utt.domains
+                domains: utt.domains,
+                black_domains: utt.black_domains
             });
         });
         var requestBody = {utterances : savedUtts};
