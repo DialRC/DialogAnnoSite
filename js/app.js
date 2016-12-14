@@ -306,7 +306,7 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
         var requestBody = {utterances : savedUtts};
         console.log(requestBody);
         $http.post(SERVER_URL + "save_utts", requestBody).then(function(res) {
-            alert("Save batch-" + $scope.selectedBatch+1 + " successful");
+            alert("Save batch-" + $scope.selectedBatch + " successful");
             console.log(res.data);
             $scope.label_data_size = res.data.data;
             console.log("Updated " + res.data.data.toString() + " utts");
