@@ -48,10 +48,15 @@
         <br>
         <div class=body>
             <!--Verbal History-->
-            <h4 class="text-center">Dialog Context {{$index+1}}</h4>
-            <div class="history" ng-repeat="h in turns[turns.length-1].history track by $index">
-                <div class=sysUtt ng-if="$index % 2 == 0"> <p>{{h}}</p> </div>
-                <div class=usrUtt ng-if="$index % 2 != 0"> <p>{{h}}</p> </div>
+            <div ng-show="!loadingFileData">
+                <h4 class="text-center">Dialog Context {{$index+1}}</h4>
+                <div class="history" ng-repeat="h in turns[turns.length-1].history track by $index">
+                    <div class=sysUtt ng-if="$index % 2 == 0"> <p>{{h}} <b>(delay {{turns[$index/2].sys_delay}})</b> </p> </div>
+                    <div class=usrUtt ng-if="$index % 2 != 0"> <p>{{h}} <b>(pause {{turns[($index-1)/2].final_pause}})</b> </p> </div>
+                </div>
+                <div class="history">
+                    <div class=sysUtt"> <p>sys: {{turns[turns.length-1].sys_utt}} <b>(delay {{turns[turns.length-1].sys_delay}})</b></p> </div>
+                </div>
             </div>
             <div class="col-md-12 text-center" ng-show="loadingFileData">
                 <p class="h4">Loading...</p>

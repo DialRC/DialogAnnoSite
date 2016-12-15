@@ -36,17 +36,12 @@ var dialogViewController = app.controller("dialogViewController", function ($sco
             console.log($scope.fileData);
             console.log($scope.fileData.turns);
             $scope.fileData.turns.forEach(function(turn, idx) {
-                $scope.turns.push({
-                    idx: idx,
-                    mentions: turn.mentions,
-                    belief: turn.belief,
-                    slot_desc: turn.slot_desc,
-                    history: turn.history,
-                    chat: turn.chat,
-                    actions: turn.actions,
-                    sent: mapToSent(turn.actions, turn.chat),
-                    valid: true
-                });
+                var norm_turn = JSON.parse(JSON.stringify(turn));
+                norm_turn["sent"] = mapToSent(turn.actions, turn.chat);
+                norm_turn["valid"] = true;
+                norm_turn["idx"] = idx;
+                norm_turn["final_pause"] = Math.round(turn.final_pause);
+                $scope.turns.push(norm_turn);
             });
             // shuffle the turns to make is independent
             // shuffle($scope.turns);
