@@ -1,8 +1,9 @@
 var app = angular.module("app", ['selectize']);
+//var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
+var SERVER_URL = "http://127.0.0.1:8000/";
+
 
 var dialogViewController = app.controller("dialogViewController", function ($scope, $http) {
-    var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
-    // var SERVER_URL = "http://127.0.0.1:8000/";
     init();
     function init() {
         $scope.fileData = {};
@@ -204,7 +205,6 @@ var dialogViewController = app.controller("dialogViewController", function ($sco
 });
 
 var nluViewController = app.controller("nluViewController", function ($scope, $http) {
-    var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
 
     init();
     function init() {

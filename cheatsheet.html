@@ -48,6 +48,42 @@
                     <p><b>{{domain_def.tag}}:</b> {{domain_def.def}}</p>
                 </div>
             </div>
+            <div class="text-center">
+                <h4> Dialog Performance Evaluation Manual</h4>
+            </div>
+            <div class="col-md-6">
+                <h5> Recommendation Rewards</h5>
+                <ul>
+                    <li> Label every system utterance with the recommendation
+                        intent with binary reward {-1, 1}.</li>
+                    <li> A system utterance is a <b>recommendation</b> if it matches
+                    the following templates.
+                        <ul>
+                            <li>(yn)request-food</li>
+                            <li>(yn)request-cu</li>
+                            <li>(yn)request-mr_clue</li>
+                        </ul>
+                    </li>
+                    <li> A recommendation gets 1 point if the users agree with the recommendation, otherwise -1</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5> Entrance Rewards</h5>
+                <ul>
+                    <li> Every system utterance that switches to a new agent should be labelled for entrance reward</li>
+                    <li> If the transition is correct +1 point otherwise -1 point </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5> Exit Rewards</h5>
+                <ul>
+                    <li> when an session with remote agent finishes, the whole
+                        sub-dialog should be labelled for exit reward </li>
+                    <li> For Cambridge/Yelp/Weather reward = success - number turns, where success = +/- 5</li>
+                    <li> For Mr Clue, the reward = number of turns</li>
+                    <li> For chatbot, the reward is +/- 1 for good response and bad response</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
