@@ -16,7 +16,6 @@
     <script type="text/javascript" src="bower_components/selectize/dist/js/standalone/selectize.min.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script type="text/javascript" src="bower_components/angular-selectize2/dist/angular-selectize.js"></script>
-
     <!--[if lt IE 9]>`
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -31,7 +30,7 @@
         <div class="text-center">
             <a href="history.html" class="btn btn-lg">History</a>
             <a href="nlu.html" class="btn btn-lg">NLU</a>
-            <a href="home.html" class="btn btn-lg">End-to-End</a>
+            <a href="end2end.html" class="btn btn-lg">End-to-End</a>
             <a href="cheatsheet.html" class="btn btn-lg">CheatSheet</a>
         </div>
         <div class="text-center">
@@ -58,7 +57,9 @@
                 <!--Belief States-->
                 <div ng-show="options.length > 1"  ng-repeat="(c, options) in turn.mentions">
                     <div class="row">
-                        <div class="col-md-6"><b>{{c}}:</b> {{turn.slot_desc[c]}}</div>
+                        <div class="col-md-6">
+                            <b>{{c}}:</b> {{turn.slot_desc[c]}}
+                        </div>
                         <div class=col-md-6>
                             <selectize config="beliefOptions" options=options ng-model="turn.belief[c]">c</selectize>
                         </div>
@@ -66,17 +67,18 @@
                 </div>
                 <br>
                 <!--Terminal Actions-->
-                <h5>Choose the next response to the above dialog context:</h5>
-                <selectize config="actOptions" options=terminals ng-model="turn.actions"></selectize>
-                <div class=valid ng-if="turn.valid"> The order of actions is valid. </div>
-                <div class=invalid ng-if="!turn.valid"> Detected turn-yielding action in the middle of response! </div>
-                <div class="preview"><b>Preview:</b> {{turn.sent}}</div>
+                <h5>Correct the response to the above dialog context:</h5>
+                <div class="sys_response"><b>System Said:</b> {{turn.sys_utt}}</div>
+                <div>
+                    <b>Experts would say:</b> <br>
+                    <textarea rows="2" cols="100" ng-model="turn.woz_utt"> {{turn.woz_utt}} </textarea>
+                </div>
                 <br>
                 <hr class="fancy">
             </div>
             <div>
                 <div class="saveArea">
-                    <input type="button" class="form-control btn-success" value="Save" ng-click="saveData()" ng-disabled = "!validateActions()">
+                    <input type="button" class="form-control btn-success" value="Save" ng-click="saveData()">
                 </div>
             </div>
             <div class="col-md-12 text-center" ng-show="loadingFileData">

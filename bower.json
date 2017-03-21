@@ -1,5 +1,5 @@
 {
-  "name": "Log Generator",
+  "name": "log_generator",
   "authors": [
   ],
   "description": "A freelancer project",
@@ -19,6 +19,7 @@
     "requirejs": "latest",
     "requirejs-domready": "latest",
     "bootstrap": "^3.3.6",
-    "angular-selectize2": "^3.0.1"
+    "angular-selectize2": "^3.0.1",
+    "jquery": "latest"
   }
 }

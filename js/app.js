@@ -1,33 +1,13 @@
 var app = angular.module("app", ['selectize']);
-var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
-// var SERVER_URL = "http://127.0.0.1:8000/";
+// var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
+var SERVER_URL = "http://127.0.0.1:8000/";
 
-
+// controller for the END-to-END page
 var dialogViewController = app.controller("dialogViewController", function ($scope, $http) {
     init();
     function init() {
         $scope.fileData = {};
         $scope.turns = [];
-    }
-
-    function mapToSent(actions, chat) {
-        var sent = "";
-        actions.forEach(function(act) {
-            if (act in $scope.nlg) {
-                if (act == "qachat_bot") {
-                    sent = sent + " " + chat + ".";
-                } else {
-                    sent = sent + " " + $scope.nlg[act];
-                }
-            }
-        });
-        return sent;
-    }
-
-    function updateTurnSent() {
-        $scope.turns.forEach(function (turn, turn_idx){
-            turn.sent = mapToSent(turn.actions, $scope.turns[turn_idx].chat);
-        });
     }
 
     function getFileData(name) {
@@ -38,8 +18,12 @@ var dialogViewController = app.controller("dialogViewController", function ($sco
             console.log($scope.fileData.turns);
             $scope.fileData.turns.forEach(function(turn, idx) {
                 var norm_turn = JSON.parse(JSON.stringify(turn));
-                norm_turn["sent"] = mapToSent(turn.actions, turn.chat);
-                norm_turn["valid"] = true;
+                norm_turn["sys_utt"] = turn.sys_utt;
+                if ("woz_utt" in turn) {
+                    norm_turn["woz_utt"] = turn.woz_utt;
+                } else {
+                    norm_turn["woz_utt"] = turn.sys_utt;
+                }
                 norm_turn["idx"] = idx;
                 norm_turn["final_pause"] = Math.round(turn.final_pause);
                 $scope.turns.push(norm_turn);
@@ -77,21 +61,6 @@ var dialogViewController = app.controller("dialogViewController", function ($sco
         maxItems: 1
     };
 
-    $scope.actOptions = {
-        valueField: 'name',
-        labelField: 'name',
-        sortField: 'name',
-        searchField: ['name'],
-        placeholder: 'Pick Actions',
-        delimiter: ',',
-        maxItems: 10,
-        onChange: function(value) {
-            console.log("Check valid");
-            $scope.validateActions();
-            updateTurnSent();
-        }
-    };
-
     $scope.beliefOptions = {
         valueField: 'name',
         labelField: 'name',
@@ -104,69 +73,15 @@ var dialogViewController = app.controller("dialogViewController", function ($sco
     $http.get(SERVER_URL + "files").then(function(res){
         // get session wise values
         $scope.listFiles = [];
-        $scope.terminals = [];
-        $scope.turnYield = [];
-        $scope.nlg = [];
-
         var files = res.data.data;
-        var terminals = res.data.terminals;
-        var turnYield = res.data.turn_yield;
-        $scope.nlg = res.data.nlg;
-
         if (files.length > 0) {
             files.forEach(function (file, f_idx) {
                 $scope.listFiles.push({name: file, label: (f_idx+1)+". "+ file});
             });
-
-            $scope.selectedFile = files[0];
+            $scope.listFiles.reverse();
+            $scope.selectedFile = files[files.length-1];
         }
-        if (terminals.length > 0) {
-            terminals.forEach(function (t) {
-                $scope.terminals.push({name: t});
-            });
-        }
-        if (turnYield.length > 0) {
-            turnYield.forEach(function (t) {
-                $scope.turnYield.push(t);
-            });
-        }
-        console.log($scope.terminals.length + " terminals");
-        console.log($scope.turnYield.length + " expects user input");
-        console.log(Object.keys($scope.nlg).length + " nlg keys");
     });
-
-    $scope.validateActions = function() {
-        var allGood = true;
-        $scope.turns.forEach(function (turn){
-            if (turn.actions.length <= 0) {
-                turn.valid = false;
-            } else {
-                var good = true;
-                for (var i = 0; i < turn.actions.length; i++) {
-                    if (turn.actions[i].indexOf('next') > -1 ||
-                        turn.actions[i].indexOf('newcall') > -1) {
-                        continue;
-                    }
-                    var isYielding = $scope.turnYield.indexOf(turn.actions[i]) > -1;
-                    if (i < turn.actions.length - 1) {
-                        if (isYielding) {
-                            good = false;
-                            break;
-                        }
-                    } else if (i == turn.actions.length - 1){
-                        if (!isYielding) {
-                            good = false;
-                        }
-                    }
-                }
-                turn.valid = good;
-                if (!good) {
-                    allGood = false;
-                }
-            }
-        });
-        return allGood;
-    };
 
     $scope.changeContentValue = function(content) {
         if (content.value == 'n') {
@@ -190,11 +105,11 @@ var dialogViewController = app.controller("dialogViewController", function ($sco
         var savedTurns = [];
         $scope.turns.forEach(function(turn) {
             savedTurns[turn.idx] = {
-                mentions: turn.mentions,
                 belief: turn.belief,
-                actions: turn.actions
+                woz_utt: turn.woz_utt
             };
         });
+        console.log(savedTurns);
         var requestBody = {turns : savedTurns};
         $http.post(SERVER_URL + "save/" + $scope.selectedFile, requestBody).then(function(res) {
             alert("Save " + $scope.selectedFile + " successful")
@@ -204,6 +119,7 @@ var dialogViewController = app.controller("dialogViewController", function ($sco
     };
 });
 
+// controller for the NLU page
 var nluViewController = app.controller("nluViewController", function ($scope, $http) {
 
     init();
@@ -312,6 +228,7 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
 
 });
 
+// controller for teh Cheat Sheet Page
 var cheatsheetViewController = app.controller("cheatsheetController", function($scope, $http) {
     // cheat sheet
     $scope.intent_defs = [
