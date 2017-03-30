@@ -228,6 +228,7 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
     };
     
     $scope.addData = function () {
+        $scope.newUtts = $scope.newUtts.replace(/\n\s*\n/g, '\n');
         if ($scope.newUtts.length <= 0) {
             return;
         }
