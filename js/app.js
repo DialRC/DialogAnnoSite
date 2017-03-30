@@ -1,6 +1,6 @@
 var app = angular.module("app", ['selectize']);
-var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
-// var SERVER_URL = "http://127.0.0.1:8000/";
+//var SERVER_URL = "http://skylar.speech.cs.cmu.edu:9000/";
+var SERVER_URL = "http://127.0.0.1:8000/";
 
 // controller for the END-to-END page
 var dialogViewController = app.controller("dialogViewController", function ($scope, $http) {
@@ -124,6 +124,7 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
 
     init();
     function init() {
+        $scope.newUtts = "";
         $scope.utterances = [];
         $scope.intent_tags = [];
         $scope.domain_tags = [];
@@ -225,7 +226,22 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
             alert("Save batch-" + $scope.selectedBatch + " failed")
         });
     };
-
+    
+    $scope.addData = function () {
+        if ($scope.newUtts.length <= 0) {
+            return;
+        }
+        var uttList = $scope.newUtts.split("\n");
+        var requestBody = {utterances : uttList};
+        console.log(requestBody);
+        $http.post(SERVER_URL + "add_utts", requestBody).then(function(res) {
+            alert("Add new utterances successful");
+            console.log(res.data);
+            $scope.newUtts = "";
+        }, function (error) {
+            alert("Submit failed")
+        });
+    }
 });
 
 // controller for teh Cheat Sheet Page

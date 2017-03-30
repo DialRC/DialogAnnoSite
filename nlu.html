@@ -42,6 +42,13 @@
             <h4>Total number of utterance {{data_size}}</h4>
             <h4>Already labelled {{label_data_size}}</h4>
         </div>
+        <div class="text-center">
+            <textarea rows="4" cols="50" placeholder="Enter new utterances here" ng-model="newUtts">
+                {{newUtts}}
+            </textarea>
+            <br>
+            <button type="submit" class="btn-primary" ng-click="addData()">Add</button>
+        </div>
         <br>
         <div class=body>
             <div ng-show="!loadingFileData" ng-repeat="utt in utterances track by $index">
