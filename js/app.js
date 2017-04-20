@@ -136,7 +136,7 @@ var nluViewController = app.controller("nluViewController", function ($scope, $h
             $scope.intent_tags.push({name: t});
         });
         var domain_tags = ["art", "food", "hotel", "bus", "flight", "weather", "game",
-            "QA", "shopping", "skills", "news", "translation", "movie", "other"];
+            "QA", "shopping", "skills", "news", "translation", "movie", "review", "other"];
         domain_tags.forEach(function (t) {
             $scope.domain_tags.push({name: t});
         });
